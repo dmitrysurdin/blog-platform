@@ -58,10 +58,16 @@ export class PostController {
   ) {
     const post = await this.postService.findById(id);
 
-    if (!post || !id) {
+    if (!post) {
       return res.status(HttpStatus.NOT_FOUND).send();
     }
-    return this.postService.update(id, updatedPost);
+
+    const isUpdated = await this.postService.update(id, updatedPost);
+    if (!isUpdated) {
+      return res.status(HttpStatus.NOT_FOUND).send();
+    }
+
+    return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 
   @Delete(':id')
@@ -69,7 +75,7 @@ export class PostController {
   async remove(@Param('id') id: string, @Res() res: Response) {
     const isDeleted = await this.postService.remove(id);
 
-    if (!isDeleted || !id) {
+    if (!isDeleted) {
       return res.status(HttpStatus.NOT_FOUND).send();
     }
 

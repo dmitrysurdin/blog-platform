@@ -64,11 +64,16 @@ export class BlogController {
   ) {
     const blog = await this.blogService.findById(id);
 
-    if (!blog || !id) {
+    if (!blog) {
+      return res.status(HttpStatus.NOT_FOUND).send();
+    }
+    const isUpdated = await this.blogService.update(id, updateBlogDto);
+
+    if (!isUpdated) {
       return res.status(HttpStatus.NOT_FOUND).send();
     }
 
-    return this.blogService.update(id, updateBlogDto);
+    return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 
   @Delete(':id')
@@ -76,7 +81,7 @@ export class BlogController {
   async remove(@Param('id') id: string, @Res() res: Response) {
     const isDeleted = await this.blogService.remove(id);
 
-    if (!isDeleted || !id) {
+    if (!isDeleted) {
       return res.status(HttpStatus.NOT_FOUND).send();
     }
 
