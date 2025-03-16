@@ -21,7 +21,6 @@ export class CommentRepository {
       content: createCommentDto.content,
       commentatorInfo: { userId, userLogin },
       createdAt: new Date().toISOString(),
-      likesInfo: { likesCount: 0, dislikesCount: 0, myStatus: 'None' },
     }).save();
   }
 
