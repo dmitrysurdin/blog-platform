@@ -46,13 +46,7 @@ export class PostController {
 
   @Get(':id')
   async findById(@Param('id') id: string, @Res() res: Response) {
-    const post = await this.postService.findById(id);
-
-    if (!post) {
-      return res.status(HttpStatus.NOT_FOUND).send();
-    }
-
-    return post;
+    return this.postService.findById(id);
   }
 
   @Put(':id')
@@ -62,12 +56,6 @@ export class PostController {
     @Body() updatedPost: Partial<CreatePostDto>,
     @Res() res: Response,
   ) {
-    const post = await this.postService.findById(id);
-
-    if (!post) {
-      return res.status(HttpStatus.NOT_FOUND).send();
-    }
-
     const isUpdated = await this.postService.update(id, updatedPost);
 
     if (!isUpdated) {

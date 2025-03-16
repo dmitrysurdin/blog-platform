@@ -58,11 +58,6 @@ export class BlogController {
     @Body() updateBlogDto: Partial<CreateBlogDto>,
     @Res() res: Response,
   ) {
-    const blog = await this.blogService.findById(id);
-
-    if (!blog) {
-      return res.status(HttpStatus.NOT_FOUND).send();
-    }
     const isUpdated = await this.blogService.update(id, updateBlogDto);
 
     if (!isUpdated) {
