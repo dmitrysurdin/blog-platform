@@ -26,7 +26,7 @@ export class PostService {
     pageSize: number,
     pageNumber: number,
     sortBy: string,
-    sortDirection: 'asc' | 'desc',
+    sortDirection: SortOrder,
     searchNameTerm: string | null,
   ) {
     return this.postRepository.findAll(
@@ -92,6 +92,39 @@ export class PostService {
       sortBy,
       (sortDirection as SortOrder) || 'desc',
       searchNameTerm,
+    );
+  }
+
+  async createPostForBlog(
+    blogId: string,
+    createPostDto: { title: string; shortDescription: string; content: string },
+  ) {
+    const blog = await this.blogRepository.findById(blogId);
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+
+    return this.postRepository.createForBlog(blogId, blog.name, createPostDto);
+  }
+
+  async getAllPostsByBlogId(
+    blogId: string,
+    pageSize: number,
+    pageNumber: number,
+    sortBy: string,
+    sortDirection: string,
+  ) {
+    const blog = await this.blogRepository.findById(blogId);
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+
+    return this.postRepository.findAllByBlogId(
+      blogId,
+      pageSize,
+      pageNumber,
+      sortBy,
+      sortDirection as SortOrder,
     );
   }
 }

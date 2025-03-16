@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, SortOrder } from 'mongoose';
 import { Blog } from '../schemas/blog.schema';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 
@@ -17,7 +17,7 @@ export class BlogRepository {
     pageNumber: number,
     searchNameTerm: string | null,
     sortBy: string,
-    sortDirection: 'asc' | 'desc',
+    sortDirection: SortOrder,
   ): Promise<{ items: Blog[]; totalCount: number }> {
     const filter = searchNameTerm
       ? { name: new RegExp(searchNameTerm, 'i') }

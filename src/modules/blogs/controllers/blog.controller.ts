@@ -9,12 +9,16 @@ import {
   Delete,
 } from '@nestjs/common';
 import { BlogService } from '../services/blog.service';
+import { PostService } from '../../posts/services/post.service';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { DATABASE } from '../../../constants';
 
 @Controller(DATABASE.BLOG_COLLECTION)
 export class BlogController {
-  constructor(private readonly blogService: BlogService) {}
+  constructor(
+    private readonly blogService: BlogService,
+    private readonly postService: PostService,
+  ) {}
 
   @Post()
   async create(@Body() createBlogDto: CreateBlogDto) {
@@ -54,5 +58,31 @@ export class BlogController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.blogService.remove(id);
+  }
+
+  @Post(':blogId/posts')
+  async createPostForBlog(
+    @Param('blogId') blogId: string,
+    @Body()
+    createPostDto: { title: string; shortDescription: string; content: string },
+  ) {
+    return this.postService.createPostForBlog(blogId, createPostDto);
+  }
+
+  @Get(':blogId/posts')
+  async getAllPostsByBlogId(
+    @Param('blogId') blogId: string,
+    @Query('pageSize') pageSize: string,
+    @Query('pageNumber') pageNumber: string,
+    @Query('sortBy') sortBy: string,
+    @Query('sortDirection') sortDirection: string,
+  ) {
+    return this.postService.getAllPostsByBlogId(
+      blogId,
+      Number(pageSize) || 10,
+      Number(pageNumber) || 1,
+      sortBy || 'createdAt',
+      sortDirection === 'asc' ? 'asc' : 'desc',
+    );
   }
 }
