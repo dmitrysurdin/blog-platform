@@ -45,8 +45,14 @@ export class PostController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string) {
-    return this.postService.findById(id);
+  async findById(@Param('id') id: string, @Res() res: Response) {
+    const post = await this.postService.findById(id);
+
+    if (!post) {
+      return res.status(HttpStatus.NOT_FOUND).send();
+    }
+
+    return post;
   }
 
   @Put(':id')
@@ -89,10 +95,6 @@ export class PostController {
     @Req() req,
     @Res() res: Response,
   ) {
-    if (!postId) {
-      return res.status(HttpStatus.NOT_FOUND).send();
-    }
-
     return this.postService.createCommentForPost(
       postId,
       createCommentDto,
