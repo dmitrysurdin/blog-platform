@@ -6,6 +6,7 @@ import {
 import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { SortOrder } from 'mongoose';
+import { mapUsersFromDb } from '../helpers/user-mapper';
 
 @Injectable()
 export class UserService {
@@ -25,7 +26,12 @@ export class UserService {
       throw new ConflictException('Login or email already exists');
     }
 
-    return this.userRepository.create(createUserDto);
+    const user = await this.userRepository.create(createUserDto);
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    return { ...createUserDto, id: user._id.toString() as string };
   }
 
   async getAll(
@@ -36,7 +42,7 @@ export class UserService {
     searchLoginTerm: string | null,
     searchEmailTerm: string | null,
   ) {
-    return this.userRepository.findAll(
+    const { items, totalCount } = await this.userRepository.findAll(
       pageSize,
       pageNumber,
       sortBy,
@@ -44,6 +50,15 @@ export class UserService {
       searchLoginTerm,
       searchEmailTerm,
     );
+    const pagesCount = Math.ceil(totalCount / pageSize);
+
+    return {
+      pagesCount,
+      totalCount,
+      pageSize,
+      page: pageNumber,
+      items: mapUsersFromDb(items),
+    };
   }
 
   async remove(id: string) {

@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CommentRepository } from '../repositories/comment.repository';
 import { CreateCommentDto } from '../dto/create-comment.dto';
+import { mapCommentFromDb } from '../helpers/comment-mapper';
 
 @Injectable()
 export class CommentService {
@@ -25,6 +26,7 @@ export class CommentService {
     if (!comment) {
       throw new NotFoundException('Comment not found');
     }
-    return comment;
+
+    return mapCommentFromDb(comment);
   }
 }

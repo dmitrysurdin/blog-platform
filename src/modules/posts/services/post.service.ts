@@ -5,6 +5,8 @@ import { BlogRepository } from '../../blogs/repositories/blog.repository';
 import { CommentRepository } from '../../comments/repositories/comment.repository';
 import { CreateCommentDto } from '../../comments/dto/create-comment.dto';
 import { SortOrder } from 'mongoose';
+import { mapPostFromDb, mapPostsFromDb } from '../helpers/post-mapper';
+import { mapCommentsFromDb } from '../../comments/helpers/comment-mapper';
 
 @Injectable()
 export class PostService {
@@ -19,7 +21,12 @@ export class PostService {
     if (!blog) {
       throw new NotFoundException('Blog not found');
     }
-    return this.postRepository.create(createPostDto, blog.name);
+    const post = await this.postRepository.create(createPostDto, blog.name);
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    return { ...createPostDto, id: post._id.toString() as string };
   }
 
   async findAll(
@@ -29,21 +36,32 @@ export class PostService {
     sortDirection: SortOrder,
     searchNameTerm: string | null,
   ) {
-    return this.postRepository.findAll(
+    const { items, totalCount } = await this.postRepository.findAll(
       pageSize,
       pageNumber,
       sortBy,
       sortDirection,
       searchNameTerm,
     );
+    const pagesCount = Math.ceil(totalCount / pageSize);
+
+    return {
+      pagesCount,
+      totalCount,
+      pageSize,
+      page: pageNumber,
+      items: mapPostsFromDb(items),
+    };
   }
 
   async findById(postId: string) {
     const post = await this.postRepository.findById(postId);
+
     if (!post) {
       throw new NotFoundException('Post not found');
     }
-    return post;
+
+    return mapPostFromDb(post);
   }
 
   async update(id: string, updatedPost: Partial<CreatePostDto>) {
@@ -61,15 +79,22 @@ export class PostService {
     userLogin: string,
   ) {
     const post = await this.postRepository.findById(postId);
+
     if (!post) {
       throw new NotFoundException('Post not found');
     }
-    return this.commentRepository.create(
+
+    const comment = await this.commentRepository.create(
       postId,
       createCommentDto,
       userId,
       userLogin,
     );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    return { ...createCommentDto, id: comment._id.toString() as string };
   }
 
   async getAllCommentsForPost(
@@ -85,7 +110,7 @@ export class PostService {
       throw new NotFoundException('Post not found');
     }
 
-    return this.commentRepository.findAllByPostId(
+    const { items, totalCount } = await this.commentRepository.findAllByPostId(
       postId,
       pageSize,
       pageNumber,
@@ -93,6 +118,15 @@ export class PostService {
       (sortDirection as SortOrder) || 'desc',
       searchNameTerm,
     );
+    const pagesCount = Math.ceil(totalCount / pageSize);
+
+    return {
+      pagesCount,
+      totalCount,
+      pageSize,
+      page: pageNumber,
+      items: mapCommentsFromDb(items),
+    };
   }
 
   async createPostForBlog(
@@ -104,7 +138,16 @@ export class PostService {
       throw new NotFoundException('Blog not found');
     }
 
-    return this.postRepository.createForBlog(blogId, blog.name, createPostDto);
+    const post = await this.postRepository.createForBlog(
+      blogId,
+      blog.name,
+      createPostDto,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    return { ...createPostDto, id: post._id.toString() as string };
   }
 
   async getAllPostsByBlogId(
@@ -115,16 +158,27 @@ export class PostService {
     sortDirection: string,
   ) {
     const blog = await this.blogRepository.findById(blogId);
+
     if (!blog) {
       throw new NotFoundException('Blog not found');
     }
 
-    return this.postRepository.findAllByBlogId(
+    const { items, totalCount } = await this.postRepository.findAllByBlogId(
       blogId,
       pageSize,
       pageNumber,
       sortBy,
       sortDirection as SortOrder,
     );
+
+    const pagesCount = Math.ceil(totalCount / pageSize);
+
+    return {
+      pagesCount,
+      totalCount,
+      pageSize,
+      page: pageNumber,
+      items: mapPostsFromDb(items),
+    };
   }
 }
