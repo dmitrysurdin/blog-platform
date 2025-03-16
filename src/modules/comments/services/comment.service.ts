@@ -40,6 +40,7 @@ export class CommentService {
 
   async findById(commentId: string) {
     const comment = await this.commentRepository.findById(commentId);
+
     if (!comment) {
       throw new NotFoundException('Comment not found');
     }

@@ -7,7 +7,8 @@ import {
   Param,
   Query,
   HttpCode,
-  HttpStatus, Res,
+  HttpStatus,
+  Res,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -48,9 +49,9 @@ export class UserController {
     const isDeleted = await this.userService.remove(id);
 
     if (!isDeleted) {
-      return res.status(404).send();
+      return res.status(HttpStatus.NOT_FOUND).send();
     }
 
-    return res.status(204).send();
+    return res.status(HttpStatus.NO_CONTENT).send();
   }
 }

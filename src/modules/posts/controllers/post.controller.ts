@@ -69,6 +69,7 @@ export class PostController {
     }
 
     const isUpdated = await this.postService.update(id, updatedPost);
+
     if (!isUpdated) {
       return res.status(HttpStatus.NOT_FOUND).send();
     }
@@ -93,7 +94,6 @@ export class PostController {
     @Param('postId') postId: string,
     @Body() createCommentDto: CreateCommentDto,
     @Req() req,
-    @Res() res: Response,
   ) {
     return this.postService.createCommentForPost(
       postId,

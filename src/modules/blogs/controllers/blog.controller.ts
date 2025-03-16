@@ -47,13 +47,8 @@ export class BlogController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string, @Res() res: Response) {
-    const blog = await this.blogService.findById(id);
-    if (!blog) {
-      return res.status(HttpStatus.NOT_FOUND).send();
-    }
-
-    return blog;
+  async findById(@Param('id') id: string) {
+    return this.blogService.findById(id);
   }
 
   @Put(':id')
