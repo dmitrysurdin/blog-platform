@@ -7,10 +7,6 @@ export const DATABASE = {
   USERS_COLLECTION: 'users',
 };
 
-export const HTTP_CODES = {
-  NO_CONTENT: 204,
-};
-
 export enum LikeStatus {
   None = 'None',
   Like = 'Like',

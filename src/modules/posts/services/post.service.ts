@@ -25,6 +25,8 @@ export class PostService {
     }
 
     const defaultAdditionalInfo = {
+      blogName: blog.name,
+      createdAt: new Date().toISOString(),
       extendedLikesInfo: {
         likesCount: 0,
         dislikesCount: 0,
@@ -170,6 +172,8 @@ export class PostService {
     }
 
     const defaultAdditionalInfo = {
+      blogName: blog.name,
+      createdAt: new Date().toISOString(),
       extendedLikesInfo: {
         likesCount: 0,
         dislikesCount: 0,

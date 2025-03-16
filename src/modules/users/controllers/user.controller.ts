@@ -6,6 +6,8 @@ import {
   Body,
   Param,
   Query,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -40,6 +42,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string) {
     return this.userService.remove(id);
   }

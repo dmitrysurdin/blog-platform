@@ -7,6 +7,8 @@ import {
   Query,
   Put,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { BlogService } from '../services/blog.service';
 import { PostService } from '../../posts/services/post.service';
@@ -48,6 +50,7 @@ export class BlogController {
   }
 
   @Put(':id')
+  @HttpCode(HttpStatus.OK)
   async update(
     @Param('id') id: string,
     @Body() updateBlogDto: Partial<CreateBlogDto>,
@@ -56,6 +59,7 @@ export class BlogController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string) {
     return this.blogService.remove(id);
   }
