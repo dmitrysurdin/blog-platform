@@ -6,7 +6,6 @@ import {
   Body,
   Param,
   Query,
-  HttpCode,
   HttpStatus,
   Res,
 } from '@nestjs/common';
@@ -44,12 +43,12 @@ export class UserController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string, @Res() res: Response) {
     const isDeleted = await this.userService.remove(id);
 
     if (!isDeleted) {
-      return res.status(HttpStatus.NOT_FOUND).send();
+      res.status(HttpStatus.NOT_FOUND).send();
+      return;
     }
 
     return res.status(HttpStatus.NO_CONTENT).send();

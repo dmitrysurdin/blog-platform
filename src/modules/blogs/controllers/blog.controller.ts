@@ -52,7 +52,6 @@ export class BlogController {
   }
 
   @Put(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
   async update(
     @Param('id') id: string,
     @Body() updateBlogDto: Partial<CreateBlogDto>,
@@ -61,19 +60,20 @@ export class BlogController {
     const isUpdated = await this.blogService.update(id, updateBlogDto);
 
     if (!isUpdated) {
-      return res.status(HttpStatus.NOT_FOUND).send();
+      res.status(HttpStatus.NOT_FOUND).send();
+      return;
     }
 
     return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string, @Res() res: Response) {
     const isDeleted = await this.blogService.remove(id);
 
     if (!isDeleted) {
-      return res.status(HttpStatus.NOT_FOUND).send();
+      res.status(HttpStatus.NOT_FOUND).send();
+      return;
     }
 
     return res.status(HttpStatus.NO_CONTENT).send();
