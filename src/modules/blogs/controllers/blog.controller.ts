@@ -50,7 +50,7 @@ export class BlogController {
   }
 
   @Put(':id')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async update(
     @Param('id') id: string,
     @Body() updateBlogDto: Partial<CreateBlogDto>,
@@ -59,7 +59,7 @@ export class BlogController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {
     return this.blogService.remove(id);
   }

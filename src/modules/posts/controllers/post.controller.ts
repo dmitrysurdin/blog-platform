@@ -8,6 +8,8 @@ import {
   Param,
   Query,
   Req,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { PostService } from '../services/post.service';
 import { CreatePostDto } from '../dto/create-post.dto';
@@ -46,6 +48,7 @@ export class PostController {
   }
 
   @Put(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async update(
     @Param('id') id: string,
     @Body() updatedPost: Partial<CreatePostDto>,
@@ -54,6 +57,7 @@ export class PostController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {
     return this.postService.remove(id);
   }

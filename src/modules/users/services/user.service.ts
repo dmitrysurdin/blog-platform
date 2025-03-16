@@ -6,7 +6,7 @@ import {
 import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { SortOrder } from 'mongoose';
-import { mapUsersFromDb } from '../helpers/user-mapper';
+import { mapUserFromDb, mapUsersFromDb } from '../helpers/user-mapper';
 
 @Injectable()
 export class UserService {
@@ -28,10 +28,7 @@ export class UserService {
 
     const user = await this.userRepository.create(createUserDto);
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    return { ...createUserDto, id: user._id.toString() as string };
+    return mapUserFromDb(user);
   }
 
   async getAll(
