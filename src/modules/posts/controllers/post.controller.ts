@@ -9,7 +9,8 @@ import {
   Query,
   Req,
   HttpCode,
-  HttpStatus, Res,
+  HttpStatus,
+  Res,
 } from '@nestjs/common';
 import { PostService } from '../services/post.service';
 import { CreatePostDto } from '../dto/create-post.dto';
@@ -53,7 +54,13 @@ export class PostController {
   async update(
     @Param('id') id: string,
     @Body() updatedPost: Partial<CreatePostDto>,
+    @Res() res: Response,
   ) {
+    const post = await this.postService.findById(id);
+
+    if (!post || !id) {
+      return res.status(HttpStatus.NOT_FOUND).send();
+    }
     return this.postService.update(id, updatedPost);
   }
 
@@ -62,7 +69,7 @@ export class PostController {
   async remove(@Param('id') id: string, @Res() res: Response) {
     const isDeleted = await this.postService.remove(id);
 
-    if (!isDeleted) {
+    if (!isDeleted || !id) {
       return res.status(HttpStatus.NOT_FOUND).send();
     }
 
@@ -74,7 +81,12 @@ export class PostController {
     @Param('postId') postId: string,
     @Body() createCommentDto: CreateCommentDto,
     @Req() req,
+    @Res() res: Response,
   ) {
+    if (!postId) {
+      return res.status(HttpStatus.NOT_FOUND).send();
+    }
+
     return this.postService.createCommentForPost(
       postId,
       createCommentDto,

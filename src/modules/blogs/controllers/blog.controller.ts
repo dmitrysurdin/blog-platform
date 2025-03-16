@@ -14,7 +14,7 @@ import {
 import { BlogService } from '../services/blog.service';
 import { PostService } from '../../posts/services/post.service';
 import { CreateBlogDto } from '../dto/create-blog.dto';
-import  { Response} from 'express';
+import { Response } from 'express';
 import { DATABASE } from '../../../constants';
 
 @Controller(DATABASE.BLOG_COLLECTION)
@@ -47,7 +47,11 @@ export class BlogController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string) {
+  async findById(@Param('id') id: string, @Res() res: Response) {
+    if (!id) {
+      return res.status(HttpStatus.NOT_FOUND).send();
+    }
+
     return this.blogService.findById(id);
   }
 
@@ -56,7 +60,14 @@ export class BlogController {
   async update(
     @Param('id') id: string,
     @Body() updateBlogDto: Partial<CreateBlogDto>,
+    @Res() res: Response,
   ) {
+    const blog = await this.blogService.findById(id);
+
+    if (!blog || !id) {
+      return res.status(HttpStatus.NOT_FOUND).send();
+    }
+
     return this.blogService.update(id, updateBlogDto);
   }
 
@@ -65,7 +76,7 @@ export class BlogController {
   async remove(@Param('id') id: string, @Res() res: Response) {
     const isDeleted = await this.blogService.remove(id);
 
-    if (!isDeleted) {
+    if (!isDeleted || !id) {
       return res.status(HttpStatus.NOT_FOUND).send();
     }
 
