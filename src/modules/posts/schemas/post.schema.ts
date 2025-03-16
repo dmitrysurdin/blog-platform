@@ -19,7 +19,7 @@ export class Post extends Document {
   @Prop({ required: true })
   blogName: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: () => new Date().toISOString() })
   createdAt: string;
 
   @Prop({
