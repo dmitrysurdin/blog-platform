@@ -10,3 +10,5 @@ async function bootstrap() {
 }
 
 bootstrap();
+
+//TODO: Добавить дефолты для создания сущностей

@@ -8,12 +8,23 @@ export class BlogService {
   constructor(private readonly blogRepository: BlogRepository) {}
 
   async create(createBlogDto: CreateBlogDto) {
-    const blog = await this.blogRepository.create(createBlogDto);
+    const defaultAdditionalInfo = {
+      createdAt: new Date().toISOString(),
+      isMembership: false,
+    };
+    const blog = await this.blogRepository.create({
+      ...createBlogDto,
+      ...defaultAdditionalInfo,
+    });
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    return { ...createBlogDto, id: blog._id.toString() as string };
+    return {
+      ...createBlogDto,
+      ...defaultAdditionalInfo,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      id: blog._id.toString() as string,
+    };
   }
 
   async findAll(query: {

@@ -15,4 +15,7 @@ export class CreateBlogDto {
 
   @IsBoolean()
   isMembership: boolean;
+
+  @IsString()
+  createdAt: string;
 }

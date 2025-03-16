@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { DATABASE } from '../../../constants';
+import { DATABASE, LikeStatus } from '../../../constants';
 
 @Schema({ collection: DATABASE.POSTS_COLLECTION })
 export class Post extends Document {
@@ -21,6 +21,22 @@ export class Post extends Document {
 
   @Prop({ required: true, default: () => new Date().toISOString() })
   createdAt: string;
+
+  @Prop({
+    type: Object,
+    default: {
+      likesCount: 0,
+      dislikesCount: 0,
+      myStatus: LikeStatus.None,
+      newestLikes: [],
+    },
+  })
+  extendedLikesInfo: {
+    likesCount: number;
+    dislikesCount: number;
+    myStatus: LikeStatus;
+    newestLikes: { addedAt: string; userId: string; login: string }[];
+  };
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

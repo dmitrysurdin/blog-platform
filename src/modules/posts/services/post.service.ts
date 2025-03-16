@@ -7,6 +7,7 @@ import { CreateCommentDto } from '../../comments/dto/create-comment.dto';
 import { SortOrder } from 'mongoose';
 import { mapPostFromDb, mapPostsFromDb } from '../helpers/post-mapper';
 import { mapCommentsFromDb } from '../../comments/helpers/comment-mapper';
+import { LikeStatus } from '../../../constants';
 
 @Injectable()
 export class PostService {
@@ -18,15 +19,33 @@ export class PostService {
 
   async create(createPostDto: CreatePostDto) {
     const blog = await this.blogRepository.findById(createPostDto.blogId);
+
     if (!blog) {
       throw new NotFoundException('Blog not found');
     }
-    const post = await this.postRepository.create(createPostDto, blog.name);
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    return { ...createPostDto, id: post._id.toString() as string };
+    const defaultAdditionalInfo = {
+      extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeStatus.None,
+        newestLikes: [{ addedAt: '', userId: '', login: '' }],
+      },
+    };
+
+    const post = await this.postRepository.create(
+      { ...createPostDto, ...defaultAdditionalInfo },
+      blog.name,
+    );
+
+    return {
+      ...createPostDto,
+      ...defaultAdditionalInfo,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      id: post._id.toString() as string,
+    };
   }
 
   async findAll(
@@ -84,17 +103,29 @@ export class PostService {
       throw new NotFoundException('Post not found');
     }
 
+    const defaultAdditionalInfo = {
+      likesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeStatus.None,
+      },
+    };
+
     const comment = await this.commentRepository.create(
       postId,
-      createCommentDto,
+      { ...createCommentDto, ...defaultAdditionalInfo },
       userId,
       userLogin,
     );
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    return { ...createCommentDto, id: comment._id.toString() as string };
+    return {
+      ...createCommentDto,
+      ...defaultAdditionalInfo,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      id: comment._id.toString() as string,
+    };
   }
 
   async getAllCommentsForPost(
@@ -138,16 +169,28 @@ export class PostService {
       throw new NotFoundException('Blog not found');
     }
 
-    const post = await this.postRepository.createForBlog(
-      blogId,
-      blog.name,
-      createPostDto,
-    );
+    const defaultAdditionalInfo = {
+      extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeStatus.None,
+        newestLikes: [{ addedAt: '', userId: '', login: '' }],
+      },
+    };
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    return { ...createPostDto, id: post._id.toString() as string };
+    const post = await this.postRepository.createForBlog(blogId, blog.name, {
+      ...createPostDto,
+      ...defaultAdditionalInfo,
+    });
+
+    return {
+      ...createPostDto,
+      ...defaultAdditionalInfo,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      id: post._id.toString() as string,
+    };
   }
 
   async getAllPostsByBlogId(
