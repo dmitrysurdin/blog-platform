@@ -9,12 +9,13 @@ import {
   Query,
   Req,
   HttpCode,
-  HttpStatus,
+  HttpStatus, Res,
 } from '@nestjs/common';
 import { PostService } from '../services/post.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { CreateCommentDto } from '../../comments/dto/create-comment.dto';
 import { DATABASE } from '../../../constants';
+import { Response } from 'express';
 
 @Controller(DATABASE.POSTS_COLLECTION)
 export class PostController {
@@ -58,8 +59,14 @@ export class PostController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string) {
-    return this.postService.remove(id);
+  async remove(@Param('id') id: string, @Res() res: Response) {
+    const isDeleted = await this.postService.remove(id);
+
+    if (!isDeleted) {
+      return res.status(HttpStatus.NOT_FOUND).send();
+    }
+
+    return res.status(HttpStatus.NO_CONTENT).send();
   }
 
   @Post(':postId/comments')

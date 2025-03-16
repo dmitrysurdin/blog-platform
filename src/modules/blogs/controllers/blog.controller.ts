@@ -9,10 +9,12 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Res,
 } from '@nestjs/common';
 import { BlogService } from '../services/blog.service';
 import { PostService } from '../../posts/services/post.service';
 import { CreateBlogDto } from '../dto/create-blog.dto';
+import  { Response} from 'express';
 import { DATABASE } from '../../../constants';
 
 @Controller(DATABASE.BLOG_COLLECTION)
@@ -60,8 +62,14 @@ export class BlogController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string) {
-    return this.blogService.remove(id);
+  async remove(@Param('id') id: string, @Res() res: Response) {
+    const isDeleted = await this.blogService.remove(id);
+
+    if (!isDeleted) {
+      return res.status(HttpStatus.NOT_FOUND).send();
+    }
+
+    return res.status(HttpStatus.NO_CONTENT).send();
   }
 
   @Post(':blogId/posts')
