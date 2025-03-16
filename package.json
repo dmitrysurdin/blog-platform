@@ -2,7 +2,7 @@
   "name": "blog-platform",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Dmitrii Surdin",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -20,10 +20,14 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs/common": "^11.0.1",
-    "@nestjs/core": "^11.0.1",
+    "@nestjs/common": "^11.0.11",
+    "@nestjs/config": "^4.0.1",
+    "@nestjs/core": "^11.0.11",
     "@nestjs/mongoose": "^11.0.1",
-    "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/platform-express": "^11.0.11",
+    "class-validator": "^0.14.1",
+    "dotenv": "^16.4.7",
+    "express-validator": "^7.2.1",
     "mongoose": "^8.12.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
