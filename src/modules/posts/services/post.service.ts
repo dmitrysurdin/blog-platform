@@ -195,7 +195,6 @@ export class PostService {
       // @ts-expect-error
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       id: post._id.toString() as string,
-      blogId,
     };
   }
 

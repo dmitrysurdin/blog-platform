@@ -66,7 +66,6 @@ export class PostRepository {
       ...createPostDto,
       blogId,
       blogName,
-      createdAt: new Date().toISOString(),
     }).save();
   }
 
