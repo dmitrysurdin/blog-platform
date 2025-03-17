@@ -7,9 +7,9 @@ import {
   Query,
   Put,
   Delete,
-  HttpCode,
   HttpStatus,
   Res,
+  NotFoundException,
 } from '@nestjs/common';
 import { BlogService } from '../services/blog.service';
 import { PostService } from '../../posts/services/post.service';
@@ -48,7 +48,13 @@ export class BlogController {
 
   @Get(':id')
   async findById(@Param('id') id: string) {
-    return this.blogService.findById(id);
+    const blog = await this.blogService.findById(id);
+
+    if (!blog) {
+      throw new NotFoundException(`Blog with ID ${id} not found`);
+    }
+
+    return blog;
   }
 
   @Put(':id')
@@ -72,8 +78,7 @@ export class BlogController {
     const isDeleted = await this.blogService.remove(id);
 
     if (!isDeleted) {
-      res.status(HttpStatus.NOT_FOUND).send();
-      return;
+      throw new NotFoundException(`Blog with ID ${id} not found`);
     }
 
     return res.status(HttpStatus.NO_CONTENT).send();
@@ -85,6 +90,12 @@ export class BlogController {
     @Body()
     createPostDto: { title: string; shortDescription: string; content: string },
   ) {
+    const blog = await this.blogService.findById(blogId);
+
+    if (!blog) {
+      throw new NotFoundException(`Блог с ID ${blogId} не найден`);
+    }
+
     return this.postService.createPostForBlog(blogId, createPostDto);
   }
 
