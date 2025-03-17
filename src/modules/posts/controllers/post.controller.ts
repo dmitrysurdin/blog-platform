@@ -8,9 +8,9 @@ import {
   Param,
   Query,
   Req,
-  HttpCode,
   HttpStatus,
   Res,
+  NotFoundException,
 } from '@nestjs/common';
 import { PostService } from '../services/post.service';
 import { CreatePostDto } from '../dto/create-post.dto';
@@ -45,8 +45,14 @@ export class PostController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string, @Res() res: Response) {
-    return this.postService.findById(id);
+  async findById(@Param('id') id: string) {
+    const post = await this.postService.findById(id);
+
+    if (!post) {
+      throw new NotFoundException(`Post with ID ${id} not found`);
+    }
+
+    return post;
   }
 
   @Put(':id')
@@ -58,8 +64,7 @@ export class PostController {
     const isUpdated = await this.postService.update(id, updatedPost);
 
     if (!isUpdated) {
-      res.status(HttpStatus.NOT_FOUND).send();
-      return;
+      throw new NotFoundException(`Post with ID ${id} not found`);
     }
 
     return res.sendStatus(HttpStatus.NO_CONTENT);
@@ -70,8 +75,7 @@ export class PostController {
     const isDeleted = await this.postService.remove(id);
 
     if (!isDeleted) {
-      res.status(HttpStatus.NOT_FOUND).send();
-      return;
+      throw new NotFoundException(`Post with ID ${id} not found`);
     }
 
     return res.status(HttpStatus.NO_CONTENT).send();
@@ -83,6 +87,12 @@ export class PostController {
     @Body() createCommentDto: CreateCommentDto,
     @Req() req,
   ) {
+    const post = await this.postService.findById(postId);
+
+    if (!post) {
+      throw new NotFoundException(`Post with ID ${postId} not found`);
+    }
+
     return this.postService.createCommentForPost(
       postId,
       createCommentDto,

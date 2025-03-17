@@ -8,6 +8,7 @@ import {
   Query,
   HttpStatus,
   Res,
+  NotFoundException,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -47,8 +48,7 @@ export class UserController {
     const isDeleted = await this.userService.remove(id);
 
     if (!isDeleted) {
-      res.status(HttpStatus.NOT_FOUND).send();
-      return;
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
 
     return res.status(HttpStatus.NO_CONTENT).send();

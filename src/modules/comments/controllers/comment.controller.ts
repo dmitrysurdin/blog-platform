@@ -2,16 +2,14 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus,
+  NotFoundException,
   Param,
   Post,
   Req,
-  Res,
 } from '@nestjs/common';
 import { CommentService } from '../services/comment.service';
 import { DATABASE } from '../../../constants';
 import { CreateCommentDto } from '../dto/create-comment.dto';
-import { Response } from 'express';
 
 @Controller(DATABASE.COMMENTS_COLLECTION)
 export class CommentController {
@@ -32,11 +30,11 @@ export class CommentController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string, @Res() res: Response) {
+  async findById(@Param('id') id: string) {
     const comment = await this.commentService.findById(id);
 
     if (!comment) {
-      return res.status(HttpStatus.NOT_FOUND).send();
+      throw new NotFoundException(`Comment with ID ${id} not found`);
     }
 
     return comment;
