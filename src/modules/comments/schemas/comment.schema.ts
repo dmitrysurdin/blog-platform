@@ -19,7 +19,7 @@ export class Comment extends Document {
   })
   commentatorInfo: { userId: string; userLogin: string };
 
-  @Prop({ required: true, default: () => new Date().toISOString() })
+  @Prop({ required: true })
   createdAt: string;
 
   @Prop({

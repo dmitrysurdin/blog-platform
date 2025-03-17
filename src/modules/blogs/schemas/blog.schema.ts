@@ -16,7 +16,7 @@ export class Blog extends Document {
   @Prop({ required: true, default: false })
   isMembership: boolean;
 
-  @Prop({ required: true, default: () => new Date().toISOString() })
+  @Prop({ required: true })
   createdAt: string;
 }
 

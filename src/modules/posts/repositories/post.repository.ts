@@ -12,7 +12,6 @@ export class PostRepository {
     return new this.postModel({
       ...createPostDto,
       blogName,
-      createdAt: new Date().toISOString(),
     }).save();
   }
 
