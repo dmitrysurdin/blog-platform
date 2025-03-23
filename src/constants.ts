@@ -12,3 +12,7 @@ export enum LikeStatus {
   Like = 'Like',
   Dislike = 'Dislike',
 }
+
+export const GUARD_TYPE = {
+  BASIC: 'basic',
+};
