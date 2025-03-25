@@ -2,13 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import { User } from '../schemas/user.schema';
+import { ObjectId } from 'mongodb';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserRepository {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async create(createUserDto: { login: string; email: string }): Promise<User> {
-    return new this.userModel(createUserDto).save();
+  async create(user: {
+    login: string;
+    email: string;
+    passwordHash: string;
+    passwordSalt: string;
+    createdAt: string;
+  }): Promise<User> {
+    return await this.userModel.create(user);
   }
 
   async findAll(
@@ -37,7 +45,7 @@ export class UserRepository {
       .sort({ [sortBy]: sortDirection })
       .skip(skip)
       .limit(pageSize)
-      .exec();
+      .lean();
 
     const totalCount = await this.userModel.countDocuments(filter);
 
@@ -45,7 +53,37 @@ export class UserRepository {
   }
 
   async remove(id: string): Promise<boolean> {
-    const result = await this.userModel.deleteOne({ _id: id });
+    const result = await this.userModel.deleteOne({ _id: new ObjectId(id) });
     return result.deletedCount > 0;
+  }
+
+  async findByLogin(login: string): Promise<User | null> {
+    return this.userModel.findOne({ login }).lean();
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userModel.findOne({ email }).lean();
+  }
+
+  async updatePasswordById(
+    userId: string,
+    passwordHash: string,
+    passwordSalt: string,
+  ): Promise<boolean> {
+    const result = await this.userModel.updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $set: {
+          passwordHash,
+          passwordSalt,
+        },
+      },
+    );
+
+    return result.matchedCount > 0;
+  }
+
+  async isPasswordCorrect(user: User, plainPassword: string): Promise<boolean> {
+    return bcrypt.compare(plainPassword, user.passwordHash);
   }
 }

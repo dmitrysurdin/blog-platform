@@ -10,7 +10,13 @@ export class User extends Document {
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: true, default: () => new Date().toISOString() })
+  @Prop({ required: true })
+  passwordHash: string;
+
+  @Prop({ required: true })
+  passwordSalt: string;
+
+  @Prop({ required: true })
   createdAt: string;
 }
 

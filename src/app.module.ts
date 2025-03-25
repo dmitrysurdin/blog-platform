@@ -7,6 +7,8 @@ import { CommentModule } from './modules/comments/comment.module';
 import { PostModule } from './modules/posts/post.module';
 import { UserModule } from './modules/users/user.module';
 import { TestingModule } from './modules/testing/testing.module';
+import { EmailModule } from './services/email/email-module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { TestingModule } from './modules/testing/testing.module';
     CommentModule,
     PostModule,
     UserModule,
+    AuthModule,
+    EmailModule,
     TestingModule,
   ],
 })

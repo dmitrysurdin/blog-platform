@@ -5,6 +5,9 @@ import { Blog } from '../../blogs/schemas/blog.schema';
 import { Post } from '../../posts/schemas/post.schema';
 import { Comment } from '../../comments/schemas/comment.schema';
 import { User } from '../../users/schemas/user.schema';
+import { RegistrationUser } from '../../auth/schemas/registration-user-schema';
+import { RevokedToken } from '../../auth/schemas/revoked-token.schema';
+import { PasswordRecovery } from '../../auth/schemas/password-recovery.schema';
 
 @Injectable()
 export class TestingRepository {
@@ -13,6 +16,12 @@ export class TestingRepository {
     @InjectModel(Post.name) private postModel: Model<Post>,
     @InjectModel(Comment.name) private commentModel: Model<Comment>,
     @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(RegistrationUser.name)
+    private registrationUserModel: Model<RegistrationUser>,
+    @InjectModel(RevokedToken.name)
+    private revokedTokenModel: Model<RevokedToken>,
+    @InjectModel(PasswordRecovery.name)
+    private passwordRecoveryModel: Model<PasswordRecovery>,
   ) {}
 
   async clearDb(): Promise<void> {
@@ -20,5 +29,8 @@ export class TestingRepository {
     await this.postModel.deleteMany({});
     await this.commentModel.deleteMany({});
     await this.userModel.deleteMany({});
+    await this.registrationUserModel.deleteMany({});
+    await this.revokedTokenModel.deleteMany({});
+    await this.passwordRecoveryModel.deleteMany({});
   }
 }

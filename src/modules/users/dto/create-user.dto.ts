@@ -13,4 +13,8 @@ export class CreateUserDto {
     message: 'Must be a valid email address (e.g., example@example.com).',
   })
   email: string;
+
+  @IsString()
+  @Length(6, 20)
+  password: string;
 }
