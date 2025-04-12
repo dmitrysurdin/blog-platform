@@ -13,10 +13,10 @@ export class Blog extends Document {
   @Prop({ required: true })
   websiteUrl: string;
 
-  @Prop({ required: true, default: false })
+  @Prop({ default: false })
   isMembership: boolean;
 
-  @Prop({ required: true })
+  @Prop({ default: () => new Date().toISOString() })
   createdAt: string;
 }
 
