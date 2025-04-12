@@ -79,7 +79,9 @@ export class AuthController {
   @UseGuards(JwtAccessGuard)
   @Get('me')
   async me(@Req() req: Request, @Res() res: Response) {
-    const user = await this.authService.getMe(req.user['userId']);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const user = await this.authService.getMe(req?.user['userId']);
     if (!user) return res.sendStatus(401);
     return res.status(200).json(user);
   }
