@@ -4,7 +4,7 @@ import { SendEmailInput } from './dto/send-email.input';
 
 @Injectable()
 export class EmailAdapter {
-  sendEmail(input: SendEmailInput): Promise<SentMessageInfo> {
+  sendEmail(input: SendEmailInput): SentMessageInfo {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {

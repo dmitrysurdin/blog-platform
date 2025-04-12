@@ -9,7 +9,7 @@ import {
 export class EmailManager {
   constructor(private readonly emailAdapter: EmailAdapter) {}
 
-  async sendConfirmationEmail(input: SendConfirmationEmailInput) {
+  sendConfirmationEmail(input: SendConfirmationEmailInput) {
     const message = `
       <h1>Thank you for your registration</h1>
       <p>
