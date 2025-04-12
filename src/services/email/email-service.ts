@@ -11,7 +11,7 @@ export class EmailService {
   ) {}
 
   async sendConfirmationEmail(email: string, confirmationCode: string) {
-    return this.emailManager.sendConfirmationEmail({
+    return await this.emailManager.sendConfirmationEmail({
       email,
       confirmationCode,
     });
@@ -34,7 +34,7 @@ export class EmailService {
       newCode,
     );
 
-    return this.emailManager.sendConfirmationEmail({
+    return await this.emailManager.sendConfirmationEmail({
       email,
       confirmationCode: newCode,
     });
@@ -57,7 +57,7 @@ export class EmailService {
       expirationDate,
     );
 
-    return this.emailManager.sendPasswordRecovery({
+    return await this.emailManager.sendPasswordRecovery({
       email,
       recoveryCode,
     });

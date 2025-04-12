@@ -9,7 +9,7 @@ import {
 export class EmailManager {
   constructor(private readonly emailAdapter: EmailAdapter) {}
 
-  sendConfirmationEmail(input: SendConfirmationEmailInput) {
+  async sendConfirmationEmail(input: SendConfirmationEmailInput) {
     const message = `
       <h1>Thank you for your registration</h1>
       <p>
@@ -20,7 +20,7 @@ export class EmailManager {
       </p>
     `;
 
-    return this.emailAdapter.sendEmail({
+    return await this.emailAdapter.sendEmail({
       email: input.email,
       subject: 'Confirm account',
       message,
@@ -38,7 +38,7 @@ export class EmailManager {
       </p>
     `;
 
-    return this.emailAdapter.sendEmail({
+    return await this.emailAdapter.sendEmail({
       email: input.email,
       subject: 'Password recovery',
       message,
