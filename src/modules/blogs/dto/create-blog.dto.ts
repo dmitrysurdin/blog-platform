@@ -1,4 +1,4 @@
-import { IsString, IsBoolean, IsUrl, Length } from 'class-validator';
+import { IsString, IsUrl, Length } from 'class-validator';
 
 export class CreateBlogDto {
   @IsString()
@@ -12,10 +12,4 @@ export class CreateBlogDto {
   @IsUrl()
   @Length(1, 100)
   websiteUrl: string;
-
-  @IsBoolean()
-  isMembership: boolean;
-
-  @IsString()
-  createdAt: string;
 }
