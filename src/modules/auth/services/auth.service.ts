@@ -77,8 +77,14 @@ export class AuthService {
 
   async register(req: Request, res: Response): Promise<Response> {
     try {
-      const isCreated = await this.authRepository.register(req.body);
-      if (!isCreated) return res.sendStatus(500);
+      const user = await this.authRepository.register(req.body);
+      if (!user) return res.sendStatus(500);
+
+      await this.emailService.sendConfirmationEmail(
+        user.email,
+        user.confirmationCode,
+      );
+
       return res.sendStatus(204);
     } catch (e) {
       return res.status(400).json(e);

@@ -10,6 +10,13 @@ export class EmailService {
     private readonly authRepository: AuthRepository,
   ) {}
 
+  async sendConfirmationEmail(email: string, confirmationCode: string) {
+    return this.emailManager.sendConfirmationEmail({
+      email,
+      confirmationCode,
+    });
+  }
+
   async resendConfirmationEmail(email: string) {
     const user = await this.authRepository.findRegistrationUserByEmail(email);
 

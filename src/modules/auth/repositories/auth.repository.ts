@@ -108,7 +108,7 @@ export class AuthRepository {
     });
 
     await user.save();
-    return true;
+    return user;
   }
 
   async findRegistrationUserByEmail(email: string) {
