@@ -10,6 +10,7 @@ import { RegistrationUser } from '../schemas/registration-user-schema';
 import { RevokedToken } from '../schemas/revoked-token.schema';
 import { PasswordRecovery } from '../schemas/password-recovery.schema';
 import { UserRepository } from '../../users/repositories/user.repository';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class AuthRepository {
@@ -115,9 +116,9 @@ export class AuthRepository {
     return this.registrationUserModel.findOne({ email }).lean();
   }
 
-  async updateConfirmationCodeById(login: string, newCode: string) {
+  async updateConfirmationCodeById(id: string, newCode: string) {
     const result = await this.registrationUserModel.updateOne(
-      { login },
+      { _id: new ObjectId(id) },
       { $set: { confirmationCode: newCode } },
     );
 
