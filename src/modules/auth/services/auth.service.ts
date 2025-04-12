@@ -106,7 +106,11 @@ export class AuthService {
   async confirmRegistration(code: string, res: Response): Promise<Response> {
     try {
       const isConfirmed = await this.authRepository.confirmRegistration(code);
-      if (!isConfirmed) return res.sendStatus(500);
+
+      if (!isConfirmed) {
+        return res.sendStatus(500);
+      }
+
       return res.sendStatus(204);
     } catch (e) {
       return res.status(400).json(e);

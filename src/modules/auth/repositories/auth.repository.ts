@@ -115,11 +115,12 @@ export class AuthRepository {
     return this.registrationUserModel.findOne({ email }).lean();
   }
 
-  async updateConfirmationCodeById(id: string, newCode: string) {
+  async updateConfirmationCodeById(login: string, newCode: string) {
     const result = await this.registrationUserModel.updateOne(
-      { _id: id },
+      { login },
       { $set: { confirmationCode: newCode } },
     );
+
     return result.modifiedCount > 0;
   }
 
@@ -127,6 +128,9 @@ export class AuthRepository {
     const user = await this.registrationUserModel
       .findOne({ confirmationCode: code })
       .lean();
+
+    console.log(code);
+
     if (!user) {
       throw {
         errorsMessages: [{ field: 'code', message: 'Code is invalid' }],

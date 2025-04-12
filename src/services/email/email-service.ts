@@ -29,10 +29,7 @@ export class EmailService {
     }
 
     const newCode = uuidv4();
-    await this.authRepository.updateConfirmationCodeById(
-      user._id.toString(),
-      newCode,
-    );
+    await this.authRepository.updateConfirmationCodeById(user.login, newCode);
 
     return this.emailManager.sendConfirmationEmail({
       email,
